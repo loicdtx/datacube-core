@@ -59,11 +59,9 @@ GET_CAPS_TEMPLATE = """<?xml version='1.0' encoding="UTF-8" standalone="no" ?>
  <!ELEMENT VendorSpecificCapabilities EMPTY>
  ]>
 <WMT_MS_Capabilities version="1.1.1"
-        xmlns="http://www.opengis.net/wms"
-        xmlns:py="http://genshi.edgewall.org/"
         xmlns:xlink="http://www.w3.org/1999/xlink">
 <Service>
-  <Name>Datacube WMS</Name>
+  <Name>OGC:WMS</Name>
   <Title>WMS server for Datacube</Title>
   <OnlineResource xlink:href="{location}"></OnlineResource>
 </Service>
