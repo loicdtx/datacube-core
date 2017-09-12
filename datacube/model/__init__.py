@@ -483,6 +483,10 @@ class DatasetType(object):
         return hash(self.name)
 
 
+# TODO: Eventually make this change permanent and deprecate DatasetType
+Product = DatasetType
+
+
 def GeoPolygon(coordinates, crs):  # pylint: disable=invalid-name
     warnings.warn("GeoPolygon is depricated. Use 'datacube.utils.geometry.polygon'", DeprecationWarning)
     if not isinstance(coordinates, Sequence):
