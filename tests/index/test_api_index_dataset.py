@@ -6,14 +6,14 @@ import datetime
 from collections import namedtuple
 from contextlib import contextmanager
 from copy import deepcopy
-
-import pytest
 from uuid import UUID
 
+import pytest
+
+from datacube.drivers.manager import DriverManager
 from datacube.index._datasets import DatasetResource
 from datacube.index.exceptions import DuplicateRecordError
 from datacube.model import DatasetType, MetadataType, Dataset
-from datacube.drivers.manager import DriverManager
 from datacube.utils.changes import DocumentMismatchError
 
 _nbar_uuid = UUID('f2f12372-8366-11e5-817e-1040f381a756')

@@ -1,25 +1,20 @@
 from __future__ import absolute_import
 
+import hashlib
 import warnings
 from pathlib import Path
 from uuid import UUID
 
-from math import ceil
 import netCDF4
-import numpy as np
 import pytest
-import hashlib
-
 import yaml
-from click.testing import CliRunner
 from affine import Affine
-from datacube.api.query import query_group_by
+from click.testing import CliRunner
 
 import datacube.scripts.cli_app
+from datacube.api.query import query_group_by
 from datacube.utils import geometry, read_documents, netcdf_extract_string
-from datacube.drivers.manager import DriverManager
-
-from .conftest import EXAMPLE_LS5_DATASET_ID, GEOTIFF
+from .conftest import GEOTIFF
 
 PROJECT_ROOT = Path(__file__).parents[1]
 CONFIG_SAMPLES = PROJECT_ROOT / 'docs/config_samples/'

@@ -4,8 +4,8 @@ Module
 """
 from __future__ import absolute_import
 
-from datacube.ui.task_app import task_app, run_tasks
 import datacube.executor
+from datacube.ui.task_app import task_app, run_tasks
 
 
 def make_test_config(index, config, **kwargs):
@@ -163,10 +163,10 @@ def test_run_tasks():
 
     def task_func(task):
         x = task['val']
-        return (x, x**2)
+        return (x, x ** 2)
 
     def process_result_func(result):
-        assert result[0]**2 == result[1]
+        assert result[0] ** 2 == result[1]
         tasks_to_do.remove(result[0])
 
     run_tasks(tasks, executor, task_func, process_result_func)

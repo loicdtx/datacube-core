@@ -2,9 +2,11 @@
 Tests for MultiprocessingExecutor
 """
 
-from datacube.executor import get_executor
 from time import sleep
+
 import pytest
+
+from datacube.executor import get_executor
 
 DATA = [1, 2, 3, 4]
 RETRIES = 5

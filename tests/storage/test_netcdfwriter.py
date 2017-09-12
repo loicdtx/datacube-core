@@ -1,19 +1,20 @@
 from __future__ import print_function, absolute_import
 
+import string
+
 import netCDF4
 import numpy
-import xarray as xr
 import pytest
+import xarray as xr
 from hypothesis import given
 from hypothesis.strategies import text
-from tests.conftest import tmpnetcdf_filename as get_tmpnetcdf_filename
-import string
 
 from datacube.model import Variable
 from datacube.storage.netcdf_writer import create_netcdf, create_coordinate, create_variable, netcdfy_data, \
     create_grid_mapping_variable, flag_mask_meanings
 from datacube.storage.storage import write_dataset_to_netcdf
 from datacube.utils import geometry, DatacubeException, read_strings_from_netcdf
+from tests.conftest import tmpnetcdf_filename as get_tmpnetcdf_filename
 
 GEO_PROJ = geometry.CRS("""GEOGCS["WGS 84",
                            DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],
@@ -185,35 +186,35 @@ def test_chunksizes(tmpnetcdf_filename):
 
 
 EXAMPLE_FLAGS_DEF = {
-        'band_1_saturated': {
-            'bits': 0,
-            'values': {
-                0: True,
-                1: False
-            },
-            'description': 'Band 1 is saturated'},
-        'band_2_saturated': {
-            'bits': 1,
-            'values': {
-                0: True,
-                1: False
-            },
-            'description': 'Band 2 is saturated'},
-        'band_3_saturated': {
-            'bits': 2,
-            'values': {
-                0: True,
-                1: False
-            },
-            'description': 'Band 3 is saturated'},
-        'land_sea': {
-            'bits': 9,
-            'values': {
-                0: 'sea',
-                1: 'land'
-            },
-            'description': 'Land/Sea observation'},
-    }
+    'band_1_saturated': {
+        'bits': 0,
+        'values': {
+            0: True,
+            1: False
+        },
+        'description': 'Band 1 is saturated'},
+    'band_2_saturated': {
+        'bits': 1,
+        'values': {
+            0: True,
+            1: False
+        },
+        'description': 'Band 2 is saturated'},
+    'band_3_saturated': {
+        'bits': 2,
+        'values': {
+            0: True,
+            1: False
+        },
+        'description': 'Band 3 is saturated'},
+    'land_sea': {
+        'bits': 9,
+        'values': {
+            0: 'sea',
+            1: 'land'
+        },
+        'description': 'Land/Sea observation'},
+}
 
 
 def test_measurements_model_netcdfflags():

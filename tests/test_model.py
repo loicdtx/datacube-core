@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import numpy
+
 from datacube.model import GridSpec
 from datacube.utils import geometry
 

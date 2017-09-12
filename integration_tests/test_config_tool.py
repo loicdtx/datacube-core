@@ -6,8 +6,8 @@ from __future__ import absolute_import, print_function
 
 import logging
 import random
-from pathlib import Path
 import re
+from pathlib import Path
 
 import pytest
 from click.testing import CliRunner

@@ -8,14 +8,14 @@ import itertools
 import logging
 import os
 import shutil
-from datetime import datetime, timedelta
 from contextlib import contextmanager
-from pathlib import Path
 from copy import copy, deepcopy
+from datetime import datetime, timedelta
+from pathlib import Path
 from uuid import UUID, uuid4
 
-import pytest
 import numpy as np
+import pytest
 import rasterio
 import yaml
 
@@ -31,7 +31,6 @@ from datacube.drivers.manager import DriverManager
 from datacube.api import API
 from datacube.config import LocalConfig
 from datacube.index._api import Index, _DEFAULT_METADATA_TYPES_PATH
-from datacube.index.postgres import PostgresDb
 from datacube.index.postgres.tables import _core
 
 # On Windows, symlinks are not supported in Python 2 and require
@@ -344,7 +343,7 @@ def _make_geotiffs(tiffs_dir, day_offset):
             # Write data in "corners" (rounded down by 100, for a size of 100x100)
             data = np.zeros((GEOTIFF['shape']['y'], GEOTIFF['shape']['x']), dtype=np.int16)
             data[:] = np.arange(GEOTIFF['shape']['y'] * GEOTIFF['shape']['x']) \
-                        .reshape((GEOTIFF['shape']['y'], GEOTIFF['shape']['x'])) + 10 * band + day_offset
+                          .reshape((GEOTIFF['shape']['y'], GEOTIFF['shape']['x'])) + 10 * band + day_offset
             '''
             lr = (100 * int(GEOTIFF['shape']['y'] / 100.0),
                   100 * int(GEOTIFF['shape']['x'] / 100.0))

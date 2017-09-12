@@ -1,12 +1,13 @@
-from datacube.api.query import GroupBy
+import datetime
 
 from datacube import Datacube
-import datetime
+from datacube.api.query import GroupBy
 
 
 def test_grouping_datasets():
     def group_func(d):
         return d['time']
+
     dimension = 'time'
     units = None
     datasets = [
@@ -45,6 +46,7 @@ def _group_datasets_by_date(datasets):
 
     def sort_key(d):
         return d['time']
+
     dimension = 'time'
     units = None
 

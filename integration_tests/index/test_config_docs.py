@@ -5,18 +5,17 @@ Module
 from __future__ import absolute_import
 
 import copy
-import json
 
 import pytest
 import yaml
 from click.testing import CliRunner
 
+import datacube.scripts.cli_app
 from datacube.index._api import Index
 from datacube.index.postgres._fields import NumericRangeDocField, PgField
 from datacube.model import MetadataType, DatasetType
 from datacube.model import Range, Dataset
 from datacube.utils import changes
-import datacube.scripts.cli_app
 
 _DATASET_METADATA = {
     'id': 'f7018d80-8807-11e5-aeaa-1040f381a756',

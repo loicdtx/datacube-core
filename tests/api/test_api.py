@@ -1,20 +1,18 @@
 from __future__ import absolute_import, division, print_function
 
+from mock import MagicMock
+
 from datacube.api import API
 from datacube.drivers.manager import DriverManager
 
-from mock import MagicMock, Mock
 
-
-class PickableMock(MagicMock):
+class PickleableMock(MagicMock):
     def __reduce__(self):
-        return (MagicMock, ())
+        return MagicMock, ()
 
 
 def test_get_descriptor_no_data():
-    from mock import MagicMock, Mock
-
-    mock_index = PickableMock()
+    mock_index = PickleableMock()
     DriverManager(index=mock_index)
 
     api = API(index=mock_index)
@@ -25,7 +23,7 @@ def test_get_descriptor_no_data():
 
 
 def test_get_descriptor_some_data():
-    from mock import MagicMock, Mock
+    from mock import MagicMock
 
     band_10 = MagicMock(dtype='int16', )
     my_dict = {'band10': band_10}
@@ -46,7 +44,7 @@ def test_get_descriptor_some_data():
     su.coordinates.items
     su.storage_type.name
     su.variables.values.return_value = ['t', 'x', 'y']
-    mock_index = PickableMock()
+    mock_index = PickleableMock()
     DriverManager(index=mock_index)
 
     # mock_index.datasets.get_fields.return_value = dict(product=None)

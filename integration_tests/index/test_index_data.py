@@ -8,8 +8,8 @@ from __future__ import absolute_import
 
 import copy
 import datetime
-import sys
 import re
+import sys
 from pathlib import Path
 from uuid import UUID
 
@@ -19,8 +19,8 @@ from dateutil import tz
 from datacube.index._api import Index
 from datacube.index.exceptions import DuplicateRecordError, MissingRecordError
 from datacube.index.postgres import PostgresDb
-from datacube.utils.changes import DocumentMismatchError
 from datacube.model import Dataset
+from datacube.utils.changes import DocumentMismatchError
 
 _telemetry_uuid = UUID('4ec8fe97-e8b9-11e4-87ff-1040f381a756')
 _telemetry_dataset = {

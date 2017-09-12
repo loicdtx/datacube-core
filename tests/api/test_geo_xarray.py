@@ -17,9 +17,9 @@ from __future__ import absolute_import, division, print_function
 import numpy
 import xarray as xr
 
+from datacube.api import geo_xarray
 from ..util import isclose
 
-from datacube.api import geo_xarray
 
 # HACK: to deal with https://github.com/mapbox/rasterio/issues/694
 # try:

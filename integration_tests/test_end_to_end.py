@@ -1,20 +1,16 @@
 from __future__ import absolute_import
 
+import imp
 import shutil
-from subprocess import call
+from pathlib import Path
 
 import numpy
-import rasterio
-
 import pytest
+import rasterio
 from click.testing import CliRunner
-from pathlib import Path
 
 import datacube.scripts.cli_app
 from datacube.compat import string_types
-from datacube.drivers.manager import DriverManager
-
-import imp
 
 PROJECT_ROOT = Path(__file__).parents[1]
 CONFIG_SAMPLES = PROJECT_ROOT / 'docs/config_samples/'
@@ -239,7 +235,6 @@ def check_open_with_dc(driver_manager):
 
 
 def check_open_with_grid_workflow(driver_manager):
-
     type_name = 'ls5_nbar_albers'
     dt = driver_manager.index.products.get_by_name(type_name)
 
@@ -292,9 +287,9 @@ def check_analytics_list_searchables(driver_manager):
     for storage_type in result:
         assert len(result[storage_type]['bands']) > 0
         assert len(list(result[storage_type]['dimensions'])) > 0
-#        assert result[storage_type]['instrument']
-#        assert result[storage_type]['platform']
-#        assert result[storage_type]['product_type']
+        #        assert result[storage_type]['instrument']
+        #        assert result[storage_type]['platform']
+        #        assert result[storage_type]['product_type']
         assert result[storage_type]['storage_type']
 
 
@@ -344,10 +339,10 @@ def check_get_descriptor(driver_manager):
     assert isinstance(list(d.values())[0]['result_shape'], tuple)
 
     assert len(list(d.values())[0]['dimensions']) == \
-        len(list(d.values())[0]['dimensions']) == \
-        len(list(d.values())[0]['result_shape']) == \
-        len(list(d.values())[0]['result_max']) == \
-        len(list(d.values())[0]['result_min'])
+           len(list(d.values())[0]['dimensions']) == \
+           len(list(d.values())[0]['result_shape']) == \
+           len(list(d.values())[0]['result_max']) == \
+           len(list(d.values())[0]['result_min'])
 
     for key in list(d.values())[0]['irregular_indices'].keys():
         assert key in list(d.values())[0]['dimensions']
@@ -420,10 +415,10 @@ def check_get_data(driver_manager):
     assert isinstance(d['size'], tuple)
 
     assert len(list(d['dimensions'])) == \
-        len(list(d['coordinate_reference_systems'])) == \
-        len(list(d['element_sizes'])) == \
-        len(list(d['indices'])) == \
-        len(list(d['size']))
+           len(list(d['coordinate_reference_systems'])) == \
+           len(list(d['element_sizes'])) == \
+           len(list(d['indices'])) == \
+           len(list(d['size']))
 
     for key in list(d['indices'].keys()):
         assert key in list(d['dimensions'])
@@ -525,9 +520,9 @@ def check_get_descriptor_data(driver_manager):
     d2 = g.get_data(data_request_descriptor)
 
     assert list(d1.values())[0]['result_shape'] == \
-        d2['size'] == \
-        d2['arrays'][var1].shape == \
-        d2['arrays'][var2].shape
+           d2['size'] == \
+           d2['arrays'][var1].shape == \
+           d2['arrays'][var2].shape
 
     assert d2['arrays'][var1].shape[0] > 0
     assert d2['arrays'][var1].shape[1] > 0
@@ -568,9 +563,9 @@ def check_get_descriptor_data_storage_type(driver_manager):
     d2 = g.get_data(data_request_descriptor)
 
     assert list(d1.values())[0]['result_shape'] == \
-        d2['size'] == \
-        d2['arrays'][var1].shape == \
-        d2['arrays'][var2].shape
+           d2['size'] == \
+           d2['arrays'][var1].shape == \
+           d2['arrays'][var2].shape
 
     assert d2['arrays'][var1].shape[0] > 0
     assert d2['arrays'][var1].shape[1] > 0
@@ -595,8 +590,8 @@ def check_analytics_create_array(driver_manager):
     var2 = 'nir'
 
     # Lake Burley Griffin
-    dimensions = {'x':    {'range': (149.07, 149.18)},
-                  'y':    {'range': (-35.32, -35.28)},
+    dimensions = {'x': {'range': (149.07, 149.18)},
+                  'y': {'range': (-35.32, -35.28)},
                   'time': {'range': (datetime(1992, 1, 1), datetime(1992, 12, 31))}}
 
     arrays = a.create_array((platform, product), [var1, var2], dimensions, 'get_data')
@@ -622,8 +617,8 @@ def check_analytics_ndvi_mask_median_expression(driver_manager):
     pq_var = 'pixelquality'
 
     # Lake Burley Griffin
-    dimensions = {'x':    {'range': (149.07, 149.18)},
-                  'y':    {'range': (-35.32, -35.28)},
+    dimensions = {'x': {'range': (149.07, 149.18)},
+                  'y': {'range': (-35.32, -35.28)},
                   'time': {'range': (datetime(1992, 1, 1), datetime(1992, 12, 31))}}
 
     b40 = a.create_array((platform, product), [var1], dimensions, 'b40')
@@ -663,8 +658,8 @@ def check_analytics_ndvi_mask_median_expression_storage_type(driver_manager):
     pq_var = 'pixelquality'
 
     # Lake Burley Griffin
-    dimensions = {'x':    {'range': (149.07, 149.18)},
-                  'y':    {'range': (-35.32, -35.28)},
+    dimensions = {'x': {'range': (149.07, 149.18)},
+                  'y': {'range': (-35.32, -35.28)},
                   'time': {'range': (datetime(1992, 1, 1), datetime(1992, 12, 31))}}
 
     b40 = a.create_array(nbar_storage_type, [var1], dimensions, 'b40')
@@ -704,8 +699,8 @@ def check_analytics_pixel_drill(driver_manager):
     pq_var = 'pixelquality'
 
     # Lake Burley Griffin
-    dimensions = {'x':    {'range': (149.12)},
-                  'y':    {'range': (-35.30)},
+    dimensions = {'x': {'range': (149.12)},
+                  'y': {'range': (-35.30)},
                   'time': {'range': (datetime(1992, 1, 1), datetime(1992, 12, 31))}}
 
     b40 = a.create_array(nbar_storage_type, [var1], dimensions, 'b40')

@@ -1,8 +1,8 @@
-
 import numpy
+from mock import MagicMock
+
 from datacube.model import GridSpec
 from datacube.utils import geometry
-from mock import MagicMock
 
 
 class PickableMock(MagicMock):
@@ -28,7 +28,7 @@ def test_gridworkflow():
     gridspec = GridSpec(crs=fakecrs, tile_size=(grid, grid), resolution=(-pixel, pixel))  # e.g. product gridspec
 
     fakedataset = MagicMock()
-    fakedataset.extent = geometry.box(left=grid, bottom=-grid, right=2*grid, top=-2*grid, crs=fakecrs)
+    fakedataset.extent = geometry.box(left=grid, bottom=-grid, right=2 * grid, top=-2 * grid, crs=fakecrs)
     fakedataset.center_time = t = datetime.datetime(2001, 2, 15)
 
     fakeindex = PickableMock()
@@ -59,7 +59,7 @@ def test_gridworkflow():
 
     # consider cell (2,-2)
     fakedataset2 = MagicMock()
-    fakedataset2.extent = geometry.box(left=2*grid, bottom=-grid, right=3*grid, top=-2*grid, crs=fakecrs)
+    fakedataset2.extent = geometry.box(left=2 * grid, bottom=-grid, right=3 * grid, top=-2 * grid, crs=fakecrs)
     fakedataset2.center_time = t
 
     def search_eager(lat=None, lon=None, **kwargs):
@@ -80,7 +80,7 @@ def test_gridworkflow():
     # check the array shape
 
     tile = gw.list_tiles(**query)[1, -2, ti]  # unpadded example
-    assert grid/pixel == 10
+    assert grid / pixel == 10
     assert tile.shape == (1, 10, 10)
 
     padded_tile = gw.list_tiles(tile_buffer=(20, 20), **query)[1, -2, ti]  # padded example
@@ -96,7 +96,7 @@ def test_gridworkflow():
 
     assert tile.geobox.alignment == padded_tile.geobox.alignment
     assert tile.geobox.affine * (0, 0) == padded_tile.geobox.affine * (2, 2)
-    assert tile.geobox.affine * (10, 10) == padded_tile.geobox.affine * (10+2, 10+2)
+    assert tile.geobox.affine * (10, 10) == padded_tile.geobox.affine * (10 + 2, 10 + 2)
 
     # ------- check loading --------
     # GridWorkflow accesses the load_data API
@@ -109,7 +109,6 @@ def test_gridworkflow():
 
     from mock import patch
     with patch('datacube.api.core.Datacube.load_data') as loader:
-
         data = GridWorkflow.load(tile)
         data2 = GridWorkflow.load(padded_tile)
         # Note, could also test Datacube.load for consistency (but may require more patching)
@@ -157,7 +156,7 @@ def test_gridworkflow_with_time_depth():
         delta = datetime.timedelta(days=16)
         for i in range(num_datasets):
             fakedataset = MagicMock()
-            fakedataset.extent = geometry.box(left=grid, bottom=-grid, right=2*grid, top=-2*grid, crs=fakecrs)
+            fakedataset.extent = geometry.box(left=grid, bottom=-grid, right=2 * grid, top=-2 * grid, crs=fakecrs)
             fakedataset.center_time = start_time + (delta * i)
             yield fakedataset
 
@@ -178,7 +177,7 @@ def test_gridworkflow_with_time_depth():
         for label, tile in cell.split('time'):
             assert tile.shape == (1, 10, 10)
 
-        #  test Tile.split_by_time()
+        # test Tile.split_by_time()
         for year, year_cell in cell.split_by_time(freq='A'):
             for t in year_cell.sources.time.values:
                 assert str(t)[:4] == year

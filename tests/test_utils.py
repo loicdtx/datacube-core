@@ -8,9 +8,9 @@ import string
 
 import pytest
 from dateutil.parser import parse
-from pandas import to_datetime
 from hypothesis import given
 from hypothesis.strategies import integers, text
+from pandas import to_datetime
 
 from datacube.utils import uri_to_local_path, clamp, gen_password, write_user_secret_file, slurp
 from datacube.utils.changes import check_doc_unchanged, get_doc_changes, MISSING, DocumentMismatchError

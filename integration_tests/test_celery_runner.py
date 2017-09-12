@@ -2,10 +2,12 @@
 Tests for datacube._celery_runner
 """
 
-from time import sleep
 import os
 import subprocess
+from time import sleep
+
 import pytest
+
 from datacube import _celery_runner as cr
 
 PORT = 29374
@@ -57,7 +59,6 @@ def test_launch_redis_with_config_password():
 
 @skip_if_no_redis
 def test_launch_redis_with_custom_password():
-
     redis_stop = cr.launch_redis(PORT, password=PASS, loglevel='verbose')
     assert redis_stop is not None
 

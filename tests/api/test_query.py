@@ -19,10 +19,9 @@ import datetime
 import pytest
 from dateutil import tz
 
-from ..util import isclose
-
 from datacube.api.query import Query, DescriptorQuery, _datetime_to_timestamp, query_group_by
 from datacube.model import Range
+from ..util import isclose
 
 
 def test_convert_descriptor_query_to_search_query():

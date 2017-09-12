@@ -56,7 +56,7 @@ def mock_get_descriptor(query_parameters):
     descriptor['ls5_nbar_albers']['variables'] = {
         name: {'nodata_value': -999, 'datatype_name': dtype('int16')}
         for name in variables
-        }
+    }
     return descriptor
 
 
@@ -214,5 +214,5 @@ def mock_get_data(query_parameters):
     data['arrays'] = {
         name: xarray.DataArray(numpy.ones((2, 400, 400), dtype=numpy.int32))
         for name in variables
-        }
+    }
     return data

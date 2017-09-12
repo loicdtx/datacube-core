@@ -7,6 +7,7 @@ tests in this and sub packages.
 from __future__ import print_function, absolute_import
 
 import os
+
 import pytest
 
 
@@ -34,6 +35,7 @@ def data_folder():
 @pytest.fixture
 def example_netcdf_path(request):
     return str(request.fspath.dirpath('data/sample_tile.nc'))
+
 
 netcdf_num = 1
 

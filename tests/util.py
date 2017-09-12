@@ -6,10 +6,10 @@ from __future__ import absolute_import
 
 import atexit
 import os
+import pathlib
 import shutil
 import tempfile
 
-import pathlib
 from datacube import compat
 
 
