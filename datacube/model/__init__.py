@@ -68,7 +68,10 @@ class Dataset(object):
     """
     A Dataset. A container of metadata, and refers typically to a multi-band raster on disk.
 
-    Most important parts are the metadata_doc and uri.
+    In ODC, for spatial data, a Dataset includes multiple bands/variables over a spatial region at a single point in
+    time.
+
+    The most important parts are the metadata_doc and uri.
 
     :type type_: DatasetType
     :param dict metadata_doc: the document (typically a parsed json/yaml)
@@ -82,7 +85,7 @@ class Dataset(object):
         #: :rtype: DatasetType
         self.type = type_
 
-        #: The document describing the dataset as a dictionary. It is often serialised as YAML on disk
+        #: The dictionary describing and specifying the dataset. It is often serialised as YAML on disk
         #: or inside a NetCDF file, and as JSON-B inside the database index.
         #: :type: dict
         self.metadata_doc = metadata_doc
@@ -117,6 +120,10 @@ class Dataset(object):
         # When the dataset was archived. Null it not archived.
         #: :type: datetime.datetime
         self.archived_time = archived_time
+
+    @property
+    def metadata(self):
+        return self.metadata_type.dataset_reader(self.metadata_doc)
 
     @property
     def metadata_type(self):
@@ -297,10 +304,6 @@ class Dataset(object):
     def __repr__(self):
         return self.__str__()
 
-    @property
-    def metadata(self):
-        return self.metadata_type.dataset_reader(self.metadata_doc)
-
 
 class Measurement(object):
     def __init__(self, measurement_dict):
@@ -315,7 +318,8 @@ class Measurement(object):
 
 @schema_validated(SCHEMA_PATH / 'metadata-type-schema.yaml')
 class MetadataType(object):
-    """Metadata Type definition"""
+    """
+    Metadata Type definition"""
 
     def __init__(self,
                  definition,
@@ -361,7 +365,7 @@ class DatasetType(object):
                  metadata_type,
                  definition,
                  id_=None):
-        assert isinstance(metadata_type, MetadataType)
+        assert isinstance(metadata_type, MetadataType)  # TODO: Is this really necessary???
 
         #: :type: int
         self.id = id_

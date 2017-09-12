@@ -285,6 +285,7 @@ class GridWorkflow(object):
             groups = [(key, tuple(group)) for key, group in groupby(observation['datasets'], group_by.group_by_func)]
 
             for key, datasets in groups:
+                # As a speed optimisation, manually create an xarray.DataArray using the undocumented `fastpath` option
                 data = numpy.empty(1, dtype=object)
                 data[0] = datasets
                 variable = xarray.Variable((group_by.dimension,), data,

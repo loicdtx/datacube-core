@@ -365,6 +365,7 @@ def generate_table(rows):
         )
 
 
+# TODO: Move exceptions to their own module
 class DatacubeException(Exception):
     """Your Data Cube has malfunctioned"""
     pass
@@ -440,16 +441,22 @@ def jsonify_document(doc):
 
     Returns the new document, leaving the original unmodified.
 
+    Handles NaN float values, datetime values and UUIDs:
+
     >>> sorted(jsonify_document({'a': (1.0, 2.0, 3.0), 'b': float("inf"), 'c': datetime(2016, 3, 11)}).items())
     [('a', (1.0, 2.0, 3.0)), ('b', 'Infinity'), ('c', '2016-03-11T00:00:00')]
-    >>> # Converts keys to strings:
+
+    Also converts any integer keys to strings:
+
     >>> sorted(jsonify_document({1: 'a', '2': 'b'}).items())
     [('1', 'a'), ('2', 'b')]
+
     >>> jsonify_document({'k': UUID("1f231570-e777-11e6-820f-185e0f80a5c0")})
     {'k': '1f231570-e777-11e6-820f-185e0f80a5c0'}
     """
 
-    def fixup_value(v):
+    def to_valid_json_value(v):
+        """Convert python types to valid json values, passes most types through untouched."""
         if isinstance(v, float):
             if v != v:
                 return "NaN"
@@ -466,7 +473,7 @@ def jsonify_document(doc):
             return str(v)
         return v
 
-    return transform_object_tree(fixup_value, doc, key_transform=str)
+    return transform_object_tree(to_valid_json_value, doc, key_transform=str)
 
 
 def iter_slices(shape, chunk_size):
