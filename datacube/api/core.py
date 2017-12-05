@@ -438,7 +438,12 @@ class Datacube(object):
             coord_shape = tuple(coord_.size for coord_ in coords.values())
             return numpy.full(coord_shape + geobox.shape, measurement_['nodata'], dtype=measurement_['dtype'])
 
+        if data_func is None:
+            print('no data func given')
+
         data_func = data_func or empty_func
+
+        print('starting')
 
         result = xarray.Dataset(attrs={'crs': geobox.crs})
         for name, coord in coords.items():
@@ -446,8 +451,12 @@ class Datacube(object):
         for name, coord in geobox.coordinates.items():
             result[name] = (name, coord.values, {'units': coord.units})
 
+        print('dataset set up')
+
         for measurement in measurements:
+            print('reading data')
             data = data_func(measurement)
+            print('read data')
 
             attrs = {
                 'nodata': measurement.get('nodata'),
@@ -461,6 +470,8 @@ class Datacube(object):
 
             dims = tuple(coords.keys()) + tuple(geobox.dimensions)
             result[measurement['name']] = (dims, data, attrs)
+
+        print('measurements fused')
 
         return result
 
@@ -499,6 +510,7 @@ class Datacube(object):
         .. seealso:: :meth:`find_datasets` :meth:`group_datasets`
         """
         if dask_chunks is None:
+            print('no dask chunk')
             def data_func(measurement):
                 data = numpy.full(sources.shape + geobox.shape, measurement['nodata'], dtype=measurement['dtype'])
                 for index, datasets in numpy.ndenumerate(sources.values):
@@ -507,6 +519,7 @@ class Datacube(object):
                                       fuse_func=fuse_func)
                 return data
         else:
+            print('dask chunk')
             def data_func(measurement):
                 return _make_dask_array(sources, geobox, measurement,
                                         skip_broken_datasets=skip_broken_datasets,

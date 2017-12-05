@@ -371,6 +371,7 @@ class RasterioDataSource(object):
     def __init__(self, filename, nodata):
         self.filename = filename
         self.nodata = nodata
+        self.count = 0
 
     def get_bandnumber(self, src):
         raise NotImplementedError()
@@ -388,6 +389,8 @@ class RasterioDataSource(object):
             _LOG.debug("opening %s", self.filename)
             with rasterio.open(self.filename) as src:
                 override = False
+                self.count = self.count + 1
+                print("I'm here %d" % self.count)
 
                 transform = _rasterio_transform(src)
                 if transform.is_identity:
