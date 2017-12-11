@@ -4,7 +4,7 @@
 abstract rasterio.Band
 
 package datacube.drivers {
-    abstract DataSource {
+    abstract DataSource #PaleGreen {
         Responsible for reading data for a single measurement for a single Dataset
         @contextmanager open()
         get_transform()
@@ -56,13 +56,20 @@ package datacube.drivers.netcdf {
 
 package datacube.storage.storage {
 
-    class BandDataSource {
+    class BandDataSource #Cyan {
+        Reads data from somewhere implementing the
+        rasterio.Band Interface
+        ..
         source : [rasterio.Band | S3Source]
 
         read()
         reproject()
     }
-    class OverrideBandDataSource {
+    class OverrideBandDataSource #Cyan {
+        Allows reading data for a band, but uses the 
+        CRS/Transform/NoData values stored in the
+        Dataset and retrieved from the index
+        ..
         source : [rasterio.Band | S3Source]
 
         read(window, out_shape)
@@ -70,11 +77,13 @@ package datacube.storage.storage {
 
     }
 
-    abstract RasterioDataSource {
+    abstract RasterioDataSource #PaleGreen {
 
     }
     DataSource <|-- RasterioDataSource
     class RasterFileDataSource {
+        Only used for testing!
+        ..
         __init__(filename, bandnumber, ...)
 
     }
@@ -93,4 +102,5 @@ BandDataSource *-- RasterioDataSource : Implemented Using
 DataSource <|-- S3DataSource
 Driver <|-- S3Driver
 RasterDatasetDataSource *-- NetCDFDriver
+S3DataSource *-- S3Driver
 @enduml
