@@ -55,20 +55,9 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx.ext.extlinks',
-    'sphinxcontrib.plantuml',
+#    'sphinxcontrib.plantuml', Not currently supported on RTD. Build images manually with `make plantuml`
     'click_utils'
 ]
-
-
-if on_rtd:
-    import subprocess
-    print(subprocess.run('which java', shell=True))
-    print(subprocess.run('which plantuml', shell=True))
-    print(subprocess.run('which dot', shell=True))
-else:
-    import os
-    os.environ['GRAPHVIZ_DOT'] = 'c:/Users/u68320/AppData/Local/Continuum/miniconda3/envs/py36/Library/bin/graphviz/dot.exe'
-    plantuml = 'java -jar C:/Users/u68320/Downloads/plantuml.jar'
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -202,10 +191,6 @@ html_static_path = ['_static']
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
 #html_last_updated_fmt = '%b %d, %Y'
-
-# If true, SmartyPants will be used to convert quotes and dashes to
-# typographically correct entities.
-html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}

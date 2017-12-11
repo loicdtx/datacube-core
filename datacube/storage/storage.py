@@ -322,7 +322,7 @@ class BandDataSource(object):
 
 
 class OverrideBandDataSource(object):
-    """Wrapper for a rasterio.Band object that overrides nodata, crs and transform
+    """Wrapper for a rasterio.Band object that overrides nodata, CRS and transform
 
     This is useful for files with malformed or missing properties.
 

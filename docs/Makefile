@@ -179,3 +179,6 @@ pseudoxml:
 livehtml:
 	sphinx-autobuild -b html -p 8123 --ignore "*_tmp_*" --ignore "*_old_*" $(ALLSPHINXOPTS) $(BUILDDIR)/html
 
+plantuml:
+#	plantuml -config plantuml.cfg -psvg ./diagrams/*.plantuml
+	plantuml -psvg ./diagrams/*.plantuml

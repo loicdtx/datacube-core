@@ -1,6 +1,8 @@
-@startuml odc-storage
-
+@startuml
 'left to right direction
+
+abstract rasterio.Band
+
 package datacube.drivers {
     abstract DataSource {
         Responsible for reading data for a single measurement for a single Dataset
@@ -32,7 +34,7 @@ package datacube.drivers.s3 {
         read(indexes, window, out_shape)
 
     }
-    class S3DataSource {
+    class S3DataSource #PaleGreen {
         __init__(dataset, band_name, storage)
         @contextmanager open() : OverrideBandDataSource
 
@@ -42,6 +44,8 @@ package datacube.drivers.s3 {
 
     }
 }
+
+rasterio.Band <|-- S3Source 
 
 package datacube.drivers.netcdf {
     class NetCDFDriver {
@@ -75,8 +79,9 @@ package datacube.storage.storage {
 
     }
     RasterioDataSource <|-- RasterFileDataSource
-    class RasterDatasetDataSource {
+    class RasterDatasetDataSource #PaleGreen {
         __init__(dataset, measurement_id)
+        @contextmanager open() : BandDataSource
 
     }
     RasterioDataSource <|-- RasterDatasetDataSource

@@ -33,5 +33,14 @@ Product
 Reading Data
 ------------
 
-.. uml:: ../diagrams/storage_drivers_old.plantuml
-   :caption: Classes currently implementing the DataCube Data Read Functionality
+.. figure:: /diagrams/current_data_read_process.svg
+
+   Current Data Read Process
+
+
+Data Load Classes
+-----------------
+
+.. figure:: /diagrams/storage_drivers_old.svg
+
+   Classes currently implementing the DataCube Data Read Functionality
