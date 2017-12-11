@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 
 from datacube.drivers.driver import Driver
-from datacube.storage.storage import write_dataset_to_netcdf, RasterDatasetSource
+from datacube.storage.storage import write_dataset_to_netcdf, RasterDatasetDataSource
 from datacube.drivers.netcdf.index import Index
 
 
@@ -32,4 +32,4 @@ class NetCDFDriver(Driver):
 
     def get_datasource(self, dataset, measurement_id):
         """See :meth:`datacube.drivers.driver.get_datasource`"""
-        return RasterDatasetSource(dataset, measurement_id)
+        return RasterDatasetDataSource(dataset, measurement_id)

@@ -684,7 +684,8 @@ def fuse_lazy(datasets, geobox, measurement, fuse_func=None, prepend_dims=0, dri
 
 def _fuse_measurement(dest, datasets, geobox, measurement, skip_broken_datasets=False,
                       fuse_func=None, driver_manager=None):
-    reproject_and_fuse([driver_manager.get_datasource(dataset, measurement['name']) for dataset in datasets],
+    all_datasources = [driver_manager.get_datasource(dataset, measurement['name']) for dataset in datasets]
+    reproject_and_fuse(all_datasources,
                        dest,
                        geobox.affine,
                        geobox.crs,

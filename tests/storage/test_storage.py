@@ -15,7 +15,7 @@ from datacube.drivers.datasource import DataSource
 from datacube.model import Dataset, DatasetType, MetadataType
 from datacube.storage.storage import OverrideBandDataSource, RasterFileDataSource, BandDataSource
 from datacube.storage.storage import write_dataset_to_netcdf, reproject_and_fuse, read_from_source, Resampling, \
-    RasterDatasetSource
+    RasterDatasetDataSource
 from datacube.utils import geometry
 
 GEO_PROJ = 'GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],' \
@@ -547,7 +547,7 @@ def test_multiband_support_in_datasetsource():
     # Without new band attribute, default to band number 1
     d = Dataset(_EXAMPLE_DATASET_TYPE, defn, uris=['file:///tmp'])
 
-    ds = RasterDatasetSource(d, measurement_id='green')
+    ds = RasterDatasetDataSource(d, measurement_id='green')
 
     bandnum = ds.get_bandnumber(None)
 
@@ -559,6 +559,6 @@ def test_multiband_support_in_datasetsource():
     defn['image']['bands']['green']['band'] = band_num
     d = Dataset(_EXAMPLE_DATASET_TYPE, defn, uris=['file:///tmp'])
 
-    ds = RasterDatasetSource(d, measurement_id='green')
+    ds = RasterDatasetDataSource(d, measurement_id='green')
 
     assert ds.get_bandnumber(None) == band_num
