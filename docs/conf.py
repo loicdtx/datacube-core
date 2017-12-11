@@ -60,6 +60,16 @@ extensions = [
 ]
 
 
+if on_rtd:
+    import subprocess
+    print(subprocess.run('which java', shell=True))
+    print(subprocess.run('which plantuml', shell=True))
+    print(subprocess.run('which dot', shell=True))
+else:
+    import os
+    os.environ['GRAPHVIZ_DOT'] = 'c:/Users/u68320/AppData/Local/Continuum/miniconda3/envs/py36/Library/bin/graphviz/dot.exe'
+    plantuml = 'java -jar C:/Users/u68320/Downloads/plantuml.jar'
+
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
