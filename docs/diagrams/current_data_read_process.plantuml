@@ -19,7 +19,7 @@ loop for each measurement/band
     create a destination array in RAM
     Dimensions are <irregular dims> + <geobox_dims>
   end note
-  loop for each time/irregular dimension slice
+  loop for each time slice
     Datacube -> Datacube: _fuse_measurement()
     activate Datacube
     Datacube -> DataLoader:  reproject_and_fuse()
@@ -28,14 +28,16 @@ loop for each measurement/band
         functions in the ""datacube.storage.storage"" module
     end note
     activate DataLoader
+    participant DataSource #PaleGreen
     loop for each DataSource
         create DataSource
         DataLoader -> DataSource: read_from_source()
         activate DataSource
 
+        participant BandSource #Cyan
         create BandSource
-        activate BandSource
         DataSource -> BandSource: open() returns BandSource
+        activate BandSource
         alt Non reprojecting read
             BandSource -> BandSource: _read_decimated()
         else ReProjecting read
