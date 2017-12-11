@@ -29,3 +29,9 @@ Product
     Product [label="{Product/DatasetType|+ name\l+ managed\l+ grid_spec
      (optional)\l+ dimensions\l...|...}"];
 
+
+Reading Data
+------------
+
+.. uml:: ../diagrams/storage_drivers_old.plantuml
+   :caption: Classes currently implementing the DataCube Data Read Functionality

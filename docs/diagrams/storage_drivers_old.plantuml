@@ -1,0 +1,91 @@
+@startuml odc-storage
+
+'left to right direction
+package datacube.drivers {
+    abstract DataSource {
+        Responsible for reading data for a single measurement for a single Dataset
+        @contextmanager open()
+        get_transform()
+        get_bandnumber()
+    }
+    abstract Driver {
+        name
+        format
+        uri_scheme
+        index xxx
+        requirements_satisfied()
+        write_dataset_to_storage()
+        as_uri()
+        _init_index()
+        get_datasource()
+    }
+}
+
+package datacube.drivers.s3 {
+    class S3Source {
+        Similar API to rasterio.Band
+
+        read(indexes, window, write_shape)
+    }
+    class S3DS {
+        __init__(parent)
+        read(indexes, window, out_shape)
+
+    }
+    class S3DataSource {
+        __init__(dataset, band_name, storage)
+        @contextmanager open() : OverrideBandDataSource
+
+    }
+    class S3Driver {
+        get_datasource(dataset, measurement_id) : S3DataSource
+
+    }
+}
+
+package datacube.drivers.netcdf {
+    class NetCDFDriver {
+
+    }
+    Driver <|-- NetCDFDriver
+}
+
+package datacube.storage.storage {
+
+    class BandDataSource {
+        source : [rasterio.Band | S3Source]
+
+        read()
+        reproject()
+    }
+    class OverrideBandDataSource {
+        source : [rasterio.Band | S3Source]
+
+        read(window, out_shape)
+        reproject()
+
+    }
+
+    abstract RasterioDataSource {
+
+    }
+    DataSource <|-- RasterioDataSource
+    class RasterFileDataSource {
+        __init__(filename, bandnumber, ...)
+
+    }
+    RasterioDataSource <|-- RasterFileDataSource
+    class RasterDatasetDataSource {
+        __init__(dataset, measurement_id)
+
+    }
+    RasterioDataSource <|-- RasterDatasetDataSource
+}
+
+OverrideBandDataSource *-- S3DataSource : Implemented Using
+OverrideBandDataSource *-- RasterioDataSource : Implemented Using
+BandDataSource *-- RasterioDataSource : Implemented Using
+DataSource <|-- S3DataSource
+Driver <|-- S3Driver
+RasterDatasetDataSource *-- NetCDFDriver
+@enduml
