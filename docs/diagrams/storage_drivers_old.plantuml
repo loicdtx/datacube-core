@@ -1,7 +1,7 @@
 @startuml
 'left to right direction
 
-abstract rasterio.Band
+interface rasterio.Band
 
 package datacube.drivers {
     abstract DataSource #PaleGreen {
@@ -10,11 +10,11 @@ package datacube.drivers {
         get_transform()
         get_bandnumber()
     }
-    abstract Driver {
+    abstract Driver #BlanchedAlmond {
         name
         format
         uri_scheme
-        index xxx
+        index **Needs to be removed**
         requirements_satisfied()
         write_dataset_to_storage()
         as_uri()
@@ -39,16 +39,16 @@ package datacube.drivers.s3 {
         @contextmanager open() : OverrideBandDataSource
 
     }
-    class S3Driver {
+    class S3Driver #BlanchedAlmond {
         get_datasource(dataset, measurement_id) : S3DataSource
 
     }
 }
 
-rasterio.Band <|-- S3Source 
+rasterio.Band <|.. S3Source 
 
 package datacube.drivers.netcdf {
-    class NetCDFDriver {
+    class NetCDFDriver #BlanchedAlmond {
 
     }
     Driver <|-- NetCDFDriver
@@ -78,10 +78,12 @@ package datacube.storage.storage {
     }
 
     abstract RasterioDataSource #PaleGreen {
+        Uses the rasterio library to read, and read/reproject
+        data
 
     }
     DataSource <|-- RasterioDataSource
-    class RasterFileDataSource {
+    class RasterFileDataSource #PaleGreen {
         Only used for testing!
         ..
         __init__(filename, bandnumber, ...)
@@ -95,12 +97,15 @@ package datacube.storage.storage {
     }
     RasterioDataSource <|-- RasterDatasetDataSource
 }
-
-OverrideBandDataSource *-- S3DataSource : Implemented Using
-OverrideBandDataSource *-- RasterioDataSource : Implemented Using
-BandDataSource *-- RasterioDataSource : Implemented Using
+S3Source *-- S3DS
 DataSource <|-- S3DataSource
+S3DataSource *-- S3Source
 Driver <|-- S3Driver
-RasterDatasetDataSource *-- NetCDFDriver
-S3DataSource *-- S3Driver
+
+OverrideBandDataSource --o S3DataSource
+OverrideBandDataSource --o "0..1" RasterioDataSource
+BandDataSource --o "0..1" RasterioDataSource
+
+RasterDatasetDataSource --o NetCDFDriver
+S3DataSource --o S3Driver
 @enduml
