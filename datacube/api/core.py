@@ -74,8 +74,7 @@ class Datacube(object):
                  index=None,
                  config=None,
                  app=None,
-                 env=None,
-                 validate_connection=True):
+                 env=None):
         """
         Create the interface for the query and storage access.
 
@@ -99,18 +98,16 @@ class Datacube(object):
             Allows you to have multiple datacube instances in one configuration, specified on load,
             eg. 'dev', 'test' or 'landsat', 'modis' etc.
 
-        :param Bool validate_connection: Validate database connection and schema immediately
-
         :return: Datacube object
 
         """
         if index is None:
             if config is not None:
                 if isinstance(config, string_types):
-                    config = LocalConfig.find([config], env=env)
-                self.index = index_connect(config, application_name=app, validate_connection=validate_connection)
+                    config = LocalConfig.find([config])
+                self.index = index_connect(config, application_name=app)
             else:
-                self.index = index_connect(application_name=app, validate_connection=validate_connection)
+                self.index = index_connect(application_name=app)
         else:
             self.index = index
 
