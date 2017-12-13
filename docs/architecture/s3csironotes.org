@@ -1,0 +1,222 @@
+# -*- org-confirm-babel-evaluate: nil -*-
+#+TITLE: Discussion points - DataCube S3 Refactor
+#+AUTHOR: Damien Ayers
+#+EMAIL: damien.ayers@ga.gov.au
+#+HTML_HEAD: <style>div.figure { max-width: 700px; }</style>
+
+* Must Change
+ 1) URI schema cannot be ~s3://~
+    - It's a standard protocol.
+    - the current s3 ~uri_body~ is meaningless and is ignored.
+    
+ 2) Change how connections to database are managed
+
+ 3) Remove database access from storage drivers
+
+* Use Cases
+
+** Simple
+A user starts a Jupyter Notebook, and runs
+
+#+begin_src python
+from datacube import Datacube
+dc = Datacube()  # This line connects to a database
+data = dc.load(product="ls8_nbar_albers",
+               time=("2017-01-01", "2017-01-02"),
+               latitude=(-39, -40), 
+               longitude=(150, 151))
+#+end_src
+
+#+BEGIN_src plantuml :file simple_use_case.svg
+
+' note right of Index : Typically PostgreSQL
+
+' note right of [First Component]
+'   A note can also
+'   be on several lines
+' end note
+title Simple Data Loading
+skinparam backgroundColor WhiteSmoke
+actor User
+participant Datacube
+database Index
+collections "Disk/S3/HTTP/etc" as Storage
+
+User -> Datacube: Request a region of data
+Datacube -> Index : Query for available datasets
+
+Index --> Datacube : list of datasets
+
+Datacube -> Datacube : Transform list and prepare for loading
+
+Datacube -> Storage : Load data from disk/s3/http/etc
+Storage --> Datacube : data loaded into memory
+Datacube --> User : Return an in memory xarray
+
+
+#+END_src
+
+#+RESULTS:
+[[file:simple_use_case.svg]]
+
+** Compute jobs at NCI
+
+
+#+BEGIN_src plantuml :file nci_compute_job.svg
+title NCI Compute Job
+
+== On Head Node ==
+actor "Head Node" as User
+actor Worker
+participant Datacube
+database Index
+collections "Disk/S3/HTTP/etc" as Storage
+
+User -> Datacube: Request a region of data
+Datacube -> Index : Query for available datasets
+
+Index --> Datacube : list of datasets
+
+Datacube -> Datacube : turn into //Loadable(s)//
+Datacube --> User : Return a serialisable list of Loadables
+
+User --> User : Save to disk/serialise and send to worker
+
+== On Worker Nodes ==
+
+Worker --> Worker : Read Loadables from disk/network
+Worker -> Datacube : Here is a Loadable, give me Data
+
+Datacube -> Storage : Load data from disk/s3/http/etc
+Storage --> Datacube : data loaded into memory
+Datacube --> Worker : Return an in memory array
+
+
+#+END_src
+
+#+RESULTS:
+[[file:nci_compute_job.svg]]
+
+
+* Configuration
+ - When the library is loaded, it will find a list of available
+   datacubes/environments.
+ - An environment specifies which database to connect to, it could also specify
+   which database driver to use.
+ - I think it only makes sense for an instance of the `Datacube` class to have
+   one database/index connection.
+   + It could either be selected automagically
+   + Or defined in the [[http://datacube-core.readthedocs.io/en/latest/ops/config.html#runtime-config][User/Runtime configuration file]]
+
+
+* Types of drivers/extension points
+We should split the current Drivers into three different extension points.
+
+ 1) Database extensions
+ 2) Storage Read Plugins
+ 3) Storage Write Plugins
+
+In some cases they will be required to work in tandem, but there are also cases
+where only a single will be required, and this should make for a simpler model.
+
+** Database extension
+*** Simple option (preferred)
+Each connection to the Database uses a single implementation. This
+implementation is selected based on the configuration file.
+
+We could use some sort of central =DriverManager= type singleton which can
+dynamically find database implementations.
+
+
+#+begin_src plantuml :file proposed_database_extension_classes.svg
+
+interface DatacubeIndex 
+
+class DefaultIndex 
+
+class SomeDatabaseExtension {
+  eg. Adding S3 chunk information
+}
+
+class AlternativeIndex {
+  eg. Using SQLite
+}
+
+DatacubeIndex <|-- DefaultIndex
+DefaultIndex <|-- SomeDatabaseExtension
+DatacubeIndex <|-- AlternativeIndex
+
+
+#+end_src
+
+#+RESULTS:
+[[file:proposed_database_extension_classes.svg]]
+
+*** Allow plugins or extensions
+This could start getting complicated fast, and I haven't seen good evidence requiring it.
+
+#+begin_src plantuml :file database_plugin.svg
+
+class SomeDatabaseExtension {
+  .. Initialise/Validate current connection ..
+  initialiseDatabaseExtras(connection) //Can be No-Op//
+  canOperateWithDatabase(connection) : bool
+
+  .. Hooks for modifying query results ..
+
+}
+#+end_src
+** Storage read
+ - Multiple should be available in the same Datacube Instance
+ - Still need to decide how to choose which one to use:
+   - Is it okay to continue doing this on the *Dataset*/*Loadable* level?
+   - *Suggestion*: Choose based on /format/ and /path/ stored in Dataset 
+   - *Alternative*: Pass each =loadable= to each StorageReader, and ask if it can handle it
+
+  
+#+Begin_src plantuml :file proposed_classes.svg
+title Proposed Class Structure for Storage Read Drivers
+class DriverManager <<Singleton>> {
+  Driver findStorageDriverFor(Loadable)
+
+    
+}
+
+interface Loadable {
+    + driverName 
+    ..
+    All the information required to load a chunk of data,
+    no need for an index connection.
+    --
+    This is currently (awkwardly) implemented as an xarray list of lists
+    There are also several different implementations. GridWorkFlow Tile,
+    The grouped DataArray used between [[http://datacube-core.readthedocs.io/en/latest/dev/generate/datacube.Datacube.group_datasets.html Datacube.group_datasets()]] and
+    Datacube.load_data()
+    [[http://dask.pydata.org]]
+
+    
+}
+
+interface StorageDriver {
+  isAvailableInCurrentEnvironment() : bool
+  isAbleToLoad(Loadable) : bool
+  loadDataFrom(Loadable) : xarray.Dataset 
+  lazyLoadDataFrom(Loadable) : xarray.DaskDataset 
+}
+
+
+
+#+end_src
+
+#+RESULTS:
+[[file:proposed_classes.svg]]
+
+
+** Storage write
+ - Multiple can be available, but we don't need automatic selection. User can
+   specify using either a configuration file or command line arguments.
+
+
+
+
+* Driver resolution for loading data

@@ -1,0 +1,9 @@
+* Tasks
+** TODO Do some stuff
+   [2017-12-07 Thu]
+   [[file:~/PycharmProjects/datacube-core/docs/s3csironotes.org::*Compute%20jobs%20at%20NCI][Compute jobs at NCI]]
+** TODO Review ODC Conference information
+   [2017-12-08 Fri]
+https://docs.google.com/document/d/1MYW-MrHJ4xzaBQYaUXAsd1qVNYP_8OMx-xr63e0WT_g/edit
+https://docs.google.com/document/d/11fczrJvHZTQVYXVNVGpFGT-4d1gA7ukERuOkZ4eYOLE/edit
+https://github.com/orgs/opendatacube/teams/odc-steering-council

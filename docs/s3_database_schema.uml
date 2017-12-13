@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset</OriginalElement>
+  <nodes>
+    <node x="133.0" y="0.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.metadata_type</node>
+    <node x="607.25" y="424.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset</node>
+    <node x="228.0" y="757.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_location</node>
+    <node x="124.0" y="468.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset</node>
+    <node x="712.0" y="746.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset_chunk</node>
+    <node x="0.0" y="801.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_source</node>
+    <node x="520.0" y="790.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset_mapping</node>
+    <node x="64.25" y="190.0">36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_type</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_type">
+      <point x="-68.0" y="-92.0" />
+      <point x="0.0" y="92.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.metadata_type">
+      <point x="68.0" y="-92.0" />
+      <point x="328.75" y="165.0" />
+      <point x="323.5" y="165.0" />
+      <point x="63.5" y="70.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset_chunk" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset">
+      <point x="0.0" y="-103.0" />
+      <point x="833.5" y="726.0" />
+      <point x="808.25" y="726.0" />
+      <point x="67.0" y="136.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_source" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset">
+      <point x="52.0" y="-48.0" />
+      <point x="156.0" y="726.0" />
+      <point x="226.0" y="726.0" />
+      <point x="-34.0" y="92.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_type" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.metadata_type">
+      <point x="0.0" y="-92.0" />
+      <point x="191.25" y="165.0" />
+      <point x="196.5" y="165.0" />
+      <point x="-63.5" y="70.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset_mapping" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset">
+      <point x="-43.0" y="-59.0" />
+      <point x="563.0" y="716.0" />
+      <point x="362.0" y="716.0" />
+      <point x="102.0" y="92.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset_location" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.dataset">
+      <point x="0.0" y="-92.0" />
+      <point x="364.0" y="726.0" />
+      <point x="294.0" y="726.0" />
+      <point x="34.0" y="92.0" />
+    </edge>
+    <edge source="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset_mapping" target="36b0e01b-911c-44d6-9246-2c3e79125389.TABLE:s3datacube.agdc.s3_dataset">
+      <point x="43.0" y="-59.0" />
+      <point x="649.0" y="726.0" />
+      <point x="674.25" y="726.0" />
+      <point x="-67.0" y="136.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.7242798353909465" x="477.5" y="476.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+

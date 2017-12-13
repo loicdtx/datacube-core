@@ -292,7 +292,8 @@ class DriverManager(object):
         :param dataset: The dataset for which to extract the specific
           data.
         """
-        return self.get_driver_by_scheme(dataset.uris).index.add_specifics(dataset)
+        driver = self.get_driver_by_scheme(dataset.uris)
+        return driver.index.add_specifics(dataset)
 
     def __enter__(self):
         return self

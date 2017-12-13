@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="360px" preserveAspectRatio="none" style="width:685px;height:360px;" version="1.1" viewBox="0 0 685 360" width="685px" zoomAndPan="magnify"><defs><filter height="300%" id="f18y8x3oxs9w1" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacingAndGlyphs" textLength="433" x="130" y="17.4023">Proposed Class Structure for Storage Read Drivers</text><!--class DriverManager--><rect fill="#FEFECE" filter="url(#f18y8x3oxs9w1)" height="67.2207" id="DriverManager" style="stroke: #A80036; stroke-width: 1.5;" width="217" x="37.5" y="75.6992"/><ellipse cx="99.25" cy="94.832" fill="#ADD1B2" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M102.2231,100.4751 Q101.6421,100.7739 101.0029,100.9233 Q100.3638,101.0728 99.6582,101.0728 Q97.1514,101.0728 95.8315,99.4209 Q94.5117,97.769 94.5117,94.6479 Q94.5117,91.5186 95.8315,89.8667 Q97.1514,88.2148 99.6582,88.2148 Q100.3638,88.2148 101.0112,88.3643 Q101.6587,88.5137 102.2231,88.8125 L102.2231,91.5352 Q101.5923,90.9541 100.9988,90.6843 Q100.4053,90.4146 99.7744,90.4146 Q98.4297,90.4146 97.7449,91.4812 Q97.0601,92.5479 97.0601,94.6479 Q97.0601,96.7397 97.7449,97.8064 Q98.4297,98.873 99.7744,98.873 Q100.4053,98.873 100.9988,98.6033 Q101.5923,98.3335 102.2231,97.7524 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="63" x="130.75" y="92.3008">«Singleton»</text><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacingAndGlyphs" textLength="85" x="119.75" y="106.4336">DriverManager</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="38.5" x2="253.5" y1="113.9648" y2="113.9648"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="38.5" x2="253.5" y1="121.9648" y2="121.9648"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="205" x="43.5" y="136.5996">Driver findStorageDriverFor(Loadable)</text><!--class Loadable--><rect fill="#FEFECE" filter="url(#f18y8x3oxs9w1)" height="159.6406" id="Loadable" style="stroke: #A80036; stroke-width: 1.5;" width="385" x="289.5" y="29.1992"/><ellipse cx="451.25" cy="45.1992" fill="#B4A7E5" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M447.1777,40.9644 L447.1777,38.8062 L454.5571,38.8062 L454.5571,40.9644 L452.0918,40.9644 L452.0918,49.041 L454.5571,49.041 L454.5571,51.1992 L447.1777,51.1992 L447.1777,49.041 L449.6431,49.041 L449.6431,40.9644 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="53" x="471.75" y="49.7344">Loadable</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="290.5" x2="673.5" y1="61.1992" y2="61.1992"/><ellipse cx="300.5" cy="73.1768" fill="none" rx="3" ry="3" style="stroke: #038048; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="62" x="309.5" y="75.834">driverName</text><line style="stroke: #A80036; stroke-width: 1.0; stroke-dasharray: 1.0,2.0;" x1="290.5" x2="673.5" y1="82.1543" y2="82.1543"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="277" x="295.5" y="96.7891">All the information required to load a chunk of data,</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="177" x="295.5" y="109.7441">no need for an index connection.</text><line style="stroke: #A80036; stroke-width: 1.0;" x1="290.5" x2="673.5" y1="116.0645" y2="116.0645"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="352" x="295.5" y="130.6992">This is currently (awkwardly) implemented as an xarray list of lists</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="363" x="295.5" y="143.6543">There are also several different implementations. GridWorkFlow Tile,</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="202" x="295.5" y="156.6094">The grouped DataArray used between</text><a target="_top" xlink:actuate="onRequest" xlink:href="http://datacube-core.readthedocs.io/en/latest/dev/generate/datacube.Datacube.group_datasets.html" xlink:show="new" xlink:title="http://datacube-core.readthedocs.io/en/latest/dev/generate/datacube.Datacube.group_datasets.html" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="145" x="500.5" y="156.6094">Datacube.group_datasets()</text><line style="stroke: #0000FF; stroke-width: 1.0;" x1="500.5" x2="645.5" y1="158.6094" y2="158.6094"/></a><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="20" x="648.5" y="156.6094">and</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="113" x="295.5" y="169.5645">Datacube.load_data()</text><a target="_top" xlink:actuate="onRequest" xlink:href="http://dask.pydata.org" xlink:show="new" xlink:title="http://dask.pydata.org" xlink:type="simple"><text fill="#0000FF" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" text-decoration="underline" textLength="123" x="295.5" y="182.5195">http://dask.pydata.org</text><line style="stroke: #0000FF; stroke-width: 1.0;" x1="295.5" x2="418.5" y1="184.5195" y2="184.5195"/></a><!--class StorageDriver--><rect fill="#FEFECE" filter="url(#f18y8x3oxs9w1)" height="99.8203" id="StorageDriver" style="stroke: #A80036; stroke-width: 1.5;" width="280" x="6" y="249.1992"/><ellipse cx="102.75" cy="265.1992" fill="#B4A7E5" rx="11" ry="11" style="stroke: #A80036; stroke-width: 1.0;"/><path d="M98.6777,260.9644 L98.6777,258.8062 L106.0571,258.8062 L106.0571,260.9644 L103.5918,260.9644 L103.5918,269.041 L106.0571,269.041 L106.0571,271.1992 L98.6777,271.1992 L98.6777,269.041 L101.1431,269.041 L101.1431,260.9644 Z "/><text fill="#000000" font-family="sans-serif" font-size="12" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="78" x="123.25" y="269.7344">StorageDriver</text><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="285" y1="281.1992" y2="281.1992"/><line style="stroke: #A80036; stroke-width: 1.5;" x1="7" x2="285" y1="289.1992" y2="289.1992"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="218" x="12" y="303.834">isAvailableInCurrentEnvironment() : bool</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="162" x="12" y="316.7891">isAbleToLoad(Loadable) : bool</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="218" x="12" y="329.7441">loadDataFrom(Loadable) : xarray.Dataset</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacingAndGlyphs" textLength="268" x="12" y="342.6992">lazyLoadDataFrom(Loadable) : xarray.DaskDataset</text><!--link DriverManager to Loadable--><!--link DriverManager to StorageDriver--><!--
+@startuml
+title Proposed Class Structure for Storage Read Drivers
+class DriverManager <<Singleton>> {
+  Driver findStorageDriverFor(Loadable)
+
+    
+}
+
+interface Loadable {
+    + driverName 
+    ..
+    All the information required to load a chunk of data,
+    no need for an index connection.
+    - -
+    This is currently (awkwardly) implemented as an xarray list of lists
+    There are also several different implementations. GridWorkFlow Tile,
+    The grouped DataArray used between [[http://datacube-core.readthedocs.io/en/latest/dev/generate/datacube.Datacube.group_datasets.html Datacube.group_datasets()]] and
+    Datacube.load_data()
+    [[http://dask.pydata.org]]
+
+    
+}
+
+interface StorageDriver {
+  isAvailableInCurrentEnvironment() : bool
+  isAbleToLoad(Loadable) : bool
+  loadDataFrom(Loadable) : xarray.Dataset 
+  lazyLoadDataFrom(Loadable) : xarray.DaskDataset 
+}
+
+
+
+@enduml
+
+PlantUML version 1.2017.18(Sat Oct 07 03:56:32 AEDT 2017)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Java Version: 1.8.0_152-b16
+Operating System: Mac OS X
+OS Version: 10.13.2
+Default Encoding: UTF-8
+Language: en
+Country: AU
+--></g></svg>
