@@ -34,7 +34,7 @@ from datacube.index._api import Index, _DEFAULT_METADATA_TYPES_PATH
 from datacube.index.postgres import PostgresDb
 from datacube.index.postgres.tables import _core
 
-Driver = namedtuple('Driver', ['name', 'uri_scheme'])
+Driver = namedtuple('Driver', ['name', 'uri_scheme', 'as_uri'])
 
 # On Windows, symlinks are not supported in Python 2 and require
 # specific privileges otherwise, so we copy instead of linking
@@ -184,7 +184,7 @@ def driver(request):
     if driver_name not in ['NetCDF CF']:
         pytest.skip(driver_name + " driver not able to be loaded in this environment")
 
-    driver = Driver(name=driver_name, uri_scheme='file')
+    driver = Driver(name=driver_name, uri_scheme='file', as_uri=(lambda p: 'file://'+str(p)))
     return driver
 
 
