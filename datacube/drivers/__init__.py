@@ -21,6 +21,7 @@ loader object is deleted.
 
 TODO: update docs post DriverManager
 """
+from __future__ import absolute_import
 
 
 def choose_datasource(dataset):
