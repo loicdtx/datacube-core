@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 """This module implements a simple plugin manager for storage drivers.
 
 Drivers are automatically loaded provided they:
