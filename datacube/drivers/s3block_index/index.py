@@ -3,37 +3,70 @@ from __future__ import absolute_import
 
 import logging
 from uuid import uuid4
-import numpy as np
 
+import numpy as np
+from sqlalchemy import MetaData
 from sqlalchemy import select, and_
 
-import datacube.drivers.index as base_index
 import datacube.index._datasets as base_dataset
-from datacube.index.postgres.tables import (
-    S3_DATASET_MAPPING, S3_DATASET, S3_DATASET_CHUNK
-)
+from datacube.index._api import Index
+from datacube.drivers.s3block_index._schema import S3_DATASET, S3_DATASET_CHUNK, S3_DATASET_MAPPING
+from datacube.index.postgres.tables import _pg_exists
+from datacube.index.postgres.tables._core import SQL_NAMING_CONVENTIONS, SCHEMA_NAME
+
+_LOG = logging.getLogger(__name__)
+
+S3_METADATA = MetaData(naming_convention=SQL_NAMING_CONVENTIONS, schema=SCHEMA_NAME)
 
 
-class Index(base_index.Index, base_index.IndexExtension):
+class S3DatabaseException(Exception):
+    """Raised on errors to do with the S3 block specific database"""
+
+
+class S3BlockIndex(Index):
     """The s3 indexer extends the existing postgres indexer functionality
     by writing additional s3 information to specific tables.
     """
 
-    def __init__(self, uri_scheme, driver_manager, index=None, *args, **kargs):
+    def __init__(self, index=None, uri_scheme='s3+block', *args, **kargs):
         """Initialise the index and its dataset resource."""
-        super(Index, self).__init__(index, *args, **kargs)
-        self.uri_scheme = uri_scheme
-        self.datasets = DatasetResource(self._db, self.products, self.uri_scheme)
+        super(S3BlockIndex, self).__init__(index, *args, **kargs)
+        if not self.connected_to_s3_database():
+            raise S3DatabaseException('Not connected to an S3 Database')
+        self.datasets = DatasetResource(self._db, self.products, uri_scheme)
 
-    def add_specifics(self, dataset):
-        """Extend the dataset doc with driver specific index data.
+    def connected_to_s3_database(self):
+        """Check requirements are satisfied.
 
-        The dataset is modified in place.
-
-        :param :cls:`datacube.model.Dataset` dataset: The dataset to
-          add s3-specific indexing data to.
+        :return: True if requirements is satisfied, otherwise returns False
         """
-        self.datasets.add_specifics(dataset)
+        # check database
+        # pylint: disable=protected-access
+        try:
+            with self._db.connect() as connection:
+                return (_pg_exists(connection._connection, "agdc.s3_dataset") and
+                        _pg_exists(connection._connection, "agdc.s3_dataset_chunk") and
+                        _pg_exists(connection._connection, "agdc.s3_dataset_mapping"))
+        except AttributeError:
+            _LOG.warning('Should only be here for tests.')
+            return True
+
+    def init_db(self, with_default_types=True, with_permissions=True):
+        is_new = super(S3BlockIndex, self).init_db(with_default_types, with_permissions)
+
+        if is_new:
+            with self._db.connect() as c:
+                try:
+                    c.execute('begin')
+                    _LOG.info('Creating s3 block tables.')
+
+                    S3_METADATA.create_all(c)
+                    c.execute('commit')
+                except:
+                    c.execute('rollback')
+                    raise
+
+        return is_new
 
     def add_datasets(self, datasets, sources_policy='verify'):
         """Index several datasets using the current driver.
@@ -55,7 +88,7 @@ class Index(base_index.Index, base_index.IndexExtension):
         dataset_refs = []
         n = 0
         for dataset in datasets.values:
-            self.datasets.add(dataset, sources_policy='skip')
+            self.datasets.add(dataset, sources_policy=sources_policy)
             dataset_refs.append(dataset.id)
             n += 1
         if n == len(datasets):
@@ -73,16 +106,18 @@ class DatasetResource(base_dataset.DatasetResource):
     additional s3 information to specific tables.
     """
 
-    def __init__(self, db, dataset_type_resource, uri_scheme='s3'):
+    def __init__(self, db, dataset_type_resource, uri_scheme='s3+block'):
         """Initialise the data resource."""
         super(DatasetResource, self).__init__(db, dataset_type_resource)
-        self.logger = logging.getLogger(self.__class__.__name__)
         self.uri_scheme = uri_scheme
 
     def add(self, dataset, sources_policy='verify', **kwargs):
         # Set uri scheme to s3
-        dataset.uris = ['%s:%s' % (self.uri_scheme, uri.split(':', 1)[1]) for uri in dataset.uris] \
-            if dataset.uris else []
+        if dataset.uris:
+            dataset.uris = ['%s:%s' % (self.uri_scheme, uri.split(':', 1)[1])
+                            for uri in dataset.uris]
+        else:
+            dataset.uris = []
         return super(DatasetResource, self).add(dataset, sources_policy, **kwargs)
 
     def _add_s3_dataset(self, transaction, s3_dataset_id, band, output):
@@ -96,25 +131,25 @@ class DatasetResource(base_dataset.DatasetResource):
         """
         # Build regular indices as list of triple scalars (as
         # numpy types are not accepted by sqlalchemy)
-        regular_indices = [list(map(np.asscalar, index)) \
+        regular_indices = [list(map(np.asscalar, index))
                            for index in output['regular_index'] if index is not None]
 
         # Build irregular indices list, padding them all to
         # the same size as required by Postgres
         # multidimensional arrays
-        irregular_indices = [list(map(np.asscalar, index)) \
+        irregular_indices = [list(map(np.asscalar, index))
                              for index in output['irregular_index'] if index is not None]
         if irregular_indices:
             irregular_max_size = max(map(len, irregular_indices))
-            irregular_indices = [index + [None] * (irregular_max_size - len(index)) \
+            irregular_indices = [index + [None] * (irregular_max_size - len(index))
                                  for index in irregular_indices]
 
-        self.logger.debug('put_s3_dataset(%s, %s, %s, %s, %s, %s, %s, %s, %s ,%s, %s)', s3_dataset_id,
-                          output['base_name'], band, output['bucket'],
-                          output['macro_shape'], output['chunk_size'],
-                          output['numpy_type'], output['dimensions'],
-                          output['regular_dims'], regular_indices,
-                          irregular_indices)
+        _LOG.debug('put_s3_dataset(%s, %s, %s, %s, %s, %s, %s, %s, %s ,%s, %s)', s3_dataset_id,
+                   output['base_name'], band, output['bucket'],
+                   output['macro_shape'], output['chunk_size'],
+                   output['numpy_type'], output['dimensions'],
+                   output['regular_dims'], regular_indices,
+                   irregular_indices)
         self.put_s3_dataset(transaction,
                             s3_dataset_id,
                             output['base_name'],
@@ -143,10 +178,10 @@ class DatasetResource(base_dataset.DatasetResource):
             index_min = list(map(np.asscalar, key_map['index_min']))
             index_max = list(map(np.asscalar, key_map['index_max']))
 
-            self.logger.debug('put_s3_dataset_chunk(%s, %s, %s, %s, %s, %s, %s)',
-                              s3_dataset_id, key_map['s3_key'],
-                              key_map['chunk_id'], key_map['compression'], micro_shape,
-                              index_min, index_max)
+            _LOG.debug('put_s3_dataset_chunk(%s, %s, %s, %s, %s, %s, %s)',
+                       s3_dataset_id, key_map['s3_key'],
+                       key_map['chunk_id'], key_map['compression'], micro_shape,
+                       index_min, index_max)
             self.put_s3_dataset_chunk(transaction,
                                       s3_dataset_id,
                                       key_map['s3_key'],
@@ -160,14 +195,14 @@ class DatasetResource(base_dataset.DatasetResource):
         """Add mappings between postgres datsets and s3 datasets to DB.
 
         :param transaction: Postgres transaction.
-        :param uuid s3_dataset_id: The uuid of the s3 dataset.
+        :param UUID s3_dataset_id: The uuid of the s3 dataset.
         :param str band: The band to index this set for.
         :param list dataset_refs: The list of dataset references
           (uuids) that all point to the s3 dataset entry being
           created.
         """
         for dataset_ref in dataset_refs:
-            self.logger.debug('put_s3_mapping(%s, %s, %s)', dataset_ref, band, s3_dataset_id)
+            _LOG.debug('put_s3_mapping(%s, %s, %s)', dataset_ref, band, s3_dataset_id)
             self.put_s3_mapping(transaction,
                                 dataset_ref,
                                 band,
@@ -197,11 +232,23 @@ class DatasetResource(base_dataset.DatasetResource):
                 # Add mappings
                 self._add_s3_dataset_mappings(transaction, s3_dataset_id, band, dataset_refs)
 
+    def _make(self, dataset_res, full_info=False):
+        """
+        :rtype Dataset
+
+        :param bool full_info: Include all available fields
+        """
+        dataset = super(DatasetResource, self)._make(dataset_res, full_info)
+        self.add_specifics(dataset)
+        return dataset
+
     def add_specifics(self, dataset):
         """Extend the dataset doc with driver specific index data.
 
         This methods extends the dataset document with a `s3_metadata`
         variable containing the s3 indexing metadata.
+
+        The dataset is modified in place.
 
         :param :cls:`datacube.model.Dataset` dataset: The dataset to
           add NetCDF-specific indexing data to.
@@ -268,7 +315,6 @@ class DatasetResource(base_dataset.DatasetResource):
 
         return res.inserted_primary_key[0]
 
-
     def get_s3_dataset(self, _connection, dataset_ref, band):
         """:type dataset_ref: uuid.UUID
         :type band: str"""
@@ -297,7 +343,6 @@ class DatasetResource(base_dataset.DatasetResource):
             )
         ).fetchall()
 
-
     def put_s3_dataset_chunk(self, _connection, s3_dataset_id, s3_key,
                              chunk_id, compression_scheme,
                              micro_shape, index_min, index_max):
@@ -321,7 +366,6 @@ class DatasetResource(base_dataset.DatasetResource):
             )
         )
         return res.inserted_primary_key[0]
-
 
     def get_s3_dataset_chunk(self, _connection, s3_dataset_id):
         """:type s3_dataset_id: uuid.UUID"""

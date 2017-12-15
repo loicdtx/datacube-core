@@ -5,8 +5,9 @@ storage mechanism.
 from __future__ import absolute_import
 
 import re
-from pathlib import Path
 from abc import ABCMeta, abstractmethod
+from pathlib import Path
+
 from six import add_metaclass
 
 
@@ -21,10 +22,7 @@ class Driver(object):
     #: Driver's Name
     __name = None
 
-    #: Driver's Index
-    __index = None
-
-    def __init__(self, driver_manager, name, index=None, *index_args, **index_kargs):
+    def __init__(self, name, index=None, *index_args, **index_kargs):
         """Initialise the driver's name and index.
 
         This should be called by subclasses, or the name and index set manually.
@@ -46,9 +44,6 @@ class Driver(object):
           indexes.
         """
         self.__name = name
-        self._driver_manager = driver_manager
-        # pylint: disable=protected-access
-        self.__index = self._init_index(driver_manager, index, *index_args, **index_kargs)
 
     @property
     def name(self):
@@ -101,24 +96,5 @@ class Driver(object):
         :param list kargs: Storage-specific keyword arguments
         :return: Storage-specific write operation output, e.g. data
           relevant to the indexing
-        """
-        return None
-
-    @abstractmethod
-    def _init_index(self, driver_manager, index, *args, **kargs):
-        """Initialise this driver's index.
-
-        :param driver_manager: The driver manager.
-        :param db: A DB connection that should be used by the
-          index. This is provided for test support only, and not all
-          drivers may support it in the future.
-        :param args: Optional positional arguments to be passed to the
-          index on initialisation. Caution: In the current
-          implementation all parameters get passed to all potential
-          indexes.
-        :param args: Optional keyword arguments to be passed to the
-          index on initialisation. Caution: In the current
-          implementation all parameters get passed to all potential
-          indexes.
         """
         return None
